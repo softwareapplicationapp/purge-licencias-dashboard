@@ -34,19 +34,29 @@ const VARIANT_CONFIG = [
     'WEEK' => [
         'product' => '211190',
         'variant' => '263237',
-        'table' => 'apipremium'
+        'table' => 'apipro'
     ],
     'MONTH' => [
         'product' => '204272',
         'variant' => '251890',
-        'table' => 'apipremium'
+        'table' => 'apipro'
+    ],
+    'YEAR' => [
+        'product' => '204275', // You'll need to update these product/variant IDs
+        'variant' => '251893',
+        'table' => 'apipro'
+    ],
+    'TRIAL' => [
+        'product' => '204276', // You'll need to update these product/variant IDs
+        'variant' => '251894',
+        'table' => 'apipro'
     ],
     'LIFETIME' => [
         'product' => '204274',
         'variant' => '251892',
-        'table' => 'apipremium'
+        'table' => 'apipro'
     ],
-    'LIFETIME_PRO' => [
+    'PREMIUM' => [
         'product' => '320628',
         'variant' => '441430',
         'table' => 'apipro'
@@ -187,31 +197,31 @@ try {
         error_log("Using table: $table for license type: $licenseType");
         
         // Set license date based on type
-        if ($licenseType === 'LIFETIME' || $licenseType === 'LIFETIME_PRO') {
+        if ($licenseType === 'LIFETIME' || $licenseType === 'PREMIUM') {
             $licenseDate = '9999-12-31 23:59:59';
         } else {
             $licenseDate = '1970-01-01 00:00:00';
         }
         
-        error_log("Preparing to insert into $table with date: $licenseDate");
+        error_log("Preparing to insert into apipro with date: $licenseDate");
         
-        // Insert into database
-        $stmt = $db->prepare("INSERT INTO $table (serial, license, licensedate, whitelist) VALUES (?, ?, ?, 'RESET')");
+        // Insert into apipro database (only table we use now)
+        $stmt = $db->prepare("INSERT INTO apipro (serial, license, licensedate, whitelist) VALUES (?, ?, ?, 'RESET')");
         $result = $stmt->execute([$serial, $license, $licenseDate]);
         
         if (!$result) {
-            error_log("Failed to insert license: " . print_r($stmt->errorInfo(), true));
+            error_log("Failed to insert license into apipro: " . print_r($stmt->errorInfo(), true));
             throw new Exception("Failed to insert license into database");
         }
         
-        error_log("Successfully inserted license: $serial into table: $table");
+        error_log("Successfully inserted license: $serial into table: apipro");
         
         $insertedLicenses[] = [
             'serial' => $serial,
             'license' => $license,
             'cupon' => $cupon, // Keep this for the response, even though it's not stored in DB
             'licenseType' => $licenseType,
-            'table' => $table
+            'table' => 'apipro'
         ];
         
         // Group serials by license type for SellAuth

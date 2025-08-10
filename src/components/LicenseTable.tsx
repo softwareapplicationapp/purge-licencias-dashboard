@@ -209,6 +209,8 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onRefresh 
     const colors = {
       'WEEK': 'bg-blue-100 text-blue-800',
       'MONTH': 'bg-green-100 text-green-800',
+      'YEAR': 'bg-indigo-100 text-indigo-800',
+      'TRIAL': 'bg-gray-100 text-gray-800',
       'LIFETIME': 'bg-purple-100 text-purple-800',
       'PREMIUM': 'bg-amber-100 text-amber-800',
     };
@@ -216,7 +218,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onRefresh 
   };
 
   const isTemporaryLicense = (license: License) => {
-    return (license.license === 'WEEK' || license.license === 'MONTH') && 
+    return ['WEEK', 'MONTH', 'YEAR', 'TRIAL'].includes(license.license) && 
            !license.licensedate.includes('1970') && 
            !license.licensedate.includes('9999');
   };

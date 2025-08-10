@@ -12,13 +12,13 @@ export const Dashboard: React.FC<DashboardProps> = ({ licenses, onRefresh }) => 
     total: 0,
     week: 0,
     month: 0,
+    year: 0,
+    trial: 0,
     lifetime: 0,
-    premium: 0,
     premium: 0,
     active: 0,
     inactive: 0,
-    weekExpiringSoon: 0,
-    monthExpiringSoon: 0,
+    temporalExpiringSoon: 0,
   });
 
   useEffect(() => {
@@ -31,12 +31,13 @@ export const Dashboard: React.FC<DashboardProps> = ({ licenses, onRefresh }) => 
       total: licenses.length,
       week: licenses.filter(l => l.license === 'WEEK').length,
       month: licenses.filter(l => l.license === 'MONTH').length,
+      year: licenses.filter(l => l.license === 'YEAR').length,
+      trial: licenses.filter(l => l.license === 'TRIAL').length,
       lifetime: licenses.filter(l => l.license === 'LIFETIME').length,
       premium: licenses.filter(l => l.license === 'PREMIUM').length,
       active: licenses.filter(l => l.licensedate.includes('9999') || (!l.licensedate.includes('1970') && !l.licensedate.includes('9999'))).length,
       inactive: licenses.filter(l => l.licensedate.includes('1970')).length,
-      weekExpiringSoon: licenses.filter(l => l.license === 'WEEK' && l.licensedate.startsWith(tomorrowStr)).length,
-      monthExpiringSoon: licenses.filter(l => l.license === 'MONTH' && l.licensedate.startsWith(tomorrowStr)).length,
+      temporalExpiringSoon: licenses.filter(l => ['WEEK', 'MONTH', 'YEAR', 'TRIAL'].includes(l.license) && l.licensedate.startsWith(tomorrowStr)).length,
     };
     setStats(newStats);
   }, [licenses]);

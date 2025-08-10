@@ -15,7 +15,7 @@ export interface LicenseCreationData {
   licenseType?: LicenseType; // Add this to help backend determine table
 }
 
-export type LicenseType = 'WEEK' | 'MONTH' | 'LIFETIME' | 'LIFETIME_PRO' | 'PREMIUM';
+export type LicenseType = 'WEEK' | 'MONTH' | 'YEAR' | 'LIFETIME' | 'PREMIUM' | 'TRIAL';
 
 export interface CreateLicenseRequest {
   licenseType: LicenseType;

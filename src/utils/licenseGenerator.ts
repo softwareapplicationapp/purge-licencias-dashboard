@@ -27,12 +27,12 @@ export class LicenseGenerator {
       let cupon = '';
       
       // Generate coupon for WEEK, MONTH, WEEKSUB, MONTHSUB
-      if (licenseType === 'WEEK' || licenseType === 'MONTH') {
+      if (['WEEK', 'MONTH', 'YEAR', 'TRIAL'].includes(licenseType)) {
         cupon = this.generateCouponCode();
       }
       
-      // For LIFETIME_PRO, we use LIFETIME as the license type but it goes to apipro table
-      const actualLicenseType = licenseType === 'LIFETIME_PRO' ? 'LIFETIME' : licenseType;
+      // All license types go to apipro table now
+      const actualLicenseType = licenseType;
       
       licenses.push({
         serial,
@@ -51,10 +51,14 @@ export class LicenseGenerator {
         return 'Licencia Week';
       case 'MONTH':
         return 'Licencia Month';
+      case 'YEAR':
+        return 'Licencia Year';
+      case 'TRIAL':
+        return 'Licencia Trial';
       case 'LIFETIME':
         return 'Licencia Lifetime';
-      case 'LIFETIME_PRO':
-        return 'Licencia Lifetime Pro';
+      case 'PREMIUM':
+        return 'Licencia Premium';
       default:
         return licenseType;
     }
@@ -66,10 +70,14 @@ export class LicenseGenerator {
         return 'bg-blue-500';
       case 'MONTH':
         return 'bg-green-500';
+      case 'YEAR':
+        return 'bg-indigo-500';
+      case 'TRIAL':
+        return 'bg-gray-500';
       case 'LIFETIME':
         return 'bg-purple-500';
-      case 'LIFETIME_PRO':
-        return 'bg-gold-500';
+      case 'PREMIUM':
+        return 'bg-amber-500';
       default:
         return 'bg-gray-500';
     }
