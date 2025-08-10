@@ -21,7 +21,7 @@ export const LicenseCreator: React.FC<LicenseCreatorProps> = ({ onLicenseCreated
   const licenseTypes = [
     { value: 'WEEK' as LicenseType, label: 'Licencia Week', icon: Calendar, color: 'bg-blue-500' },
     { value: 'MONTH' as LicenseType, label: 'Licencia Month', icon: Shield, color: 'bg-green-500' },
-    { value: 'YEAR' as LicenseType, label: 'Licencia Year', icon: Calendar, color: 'bg-indigo-500' },
+    { value: 'YEAR' as LicenseType, label: 'Licencia Year', icon: Shield, color: 'bg-indigo-500' },
     { value: 'TRIAL' as LicenseType, label: 'Licencia Trial', icon: Calendar, color: 'bg-gray-500' },
     { value: 'LIFETIME' as LicenseType, label: 'Licencia Lifetime', icon: Crown, color: 'bg-purple-500' },
     { value: 'PREMIUM' as LicenseType, label: 'Licencia Premium', icon: Zap, color: 'bg-gradient-to-r from-yellow-400 to-orange-500' },

@@ -342,6 +342,8 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onRefresh 
               <option value="ALL">Todos los Tipos</option>
               <option value="WEEK">Week</option>
               <option value="MONTH">Month</option>
+              <option value="YEAR">Year</option>
+              <option value="TRIAL">Trial</option>
               <option value="LIFETIME">Lifetime</option>
               <option value="PREMIUM">Premium</option>
             </select>

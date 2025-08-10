@@ -35,9 +35,15 @@ export const Dashboard: React.FC<DashboardProps> = ({ licenses, onRefresh }) => 
       trial: licenses.filter(l => l.license === 'TRIAL').length,
       lifetime: licenses.filter(l => l.license === 'LIFETIME').length,
       premium: licenses.filter(l => l.license === 'PREMIUM').length,
-      active: licenses.filter(l => l.licensedate.includes('9999') || (!l.licensedate.includes('1970') && !l.licensedate.includes('9999'))).length,
+      active: licenses.filter(l => 
+        l.licensedate.includes('9999') || 
+        (!l.licensedate.includes('1970') && !l.licensedate.includes('9999'))
+      ).length,
       inactive: licenses.filter(l => l.licensedate.includes('1970')).length,
-      temporalExpiringSoon: licenses.filter(l => ['WEEK', 'MONTH', 'YEAR', 'TRIAL'].includes(l.license) && l.licensedate.startsWith(tomorrowStr)).length,
+      temporalExpiringSoon: licenses.filter(l => 
+        ['WEEK', 'MONTH', 'YEAR', 'TRIAL'].includes(l.license) && 
+        l.licensedate.startsWith(tomorrowStr)
+      ).length,
     };
     setStats(newStats);
   }, [licenses]);
@@ -60,20 +66,20 @@ export const Dashboard: React.FC<DashboardProps> = ({ licenses, onRefresh }) => 
       textColor: 'text-green-600',
     },
     {
-      title: 'Licencias Semanales (Expiran Mañana)',
-      value: stats.weekExpiringSoon,
+      title: 'Licencias Inactivas',
+      value: stats.inactive,
+      icon: Crown,
+      color: 'bg-red-500',
+      bgColor: 'bg-red-50',
+      textColor: 'text-red-600',
+    },
+    {
+      title: 'Temporales (Expiran Mañana)',
+      value: stats.temporalExpiringSoon,
       icon: BarChart3,
       color: 'bg-blue-500',
       bgColor: 'bg-blue-50',
       textColor: 'text-blue-600',
-    },
-    {
-      title: 'Licencias Mensuales (Expiran Mañana)',
-      value: stats.monthExpiringSoon,
-      icon: Crown,
-      color: 'bg-green-500',
-      bgColor: 'bg-green-50',
-      textColor: 'text-green-600',
     },
   ];
 
@@ -118,6 +124,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ licenses, onRefresh }) => 
           {[
             { type: 'WEEK', count: stats.week, color: 'bg-blue-500' },
             { type: 'MONTH', count: stats.month, color: 'bg-green-500' },
+            { type: 'YEAR', count: stats.year, color: 'bg-indigo-500' },
+            { type: 'TRIAL', count: stats.trial, color: 'bg-gray-500' },
             { type: 'LIFETIME', count: stats.lifetime, color: 'bg-purple-500' },
             { type: 'PREMIUM', count: stats.premium, color: 'bg-amber-500' },
           ].map((item) => (
