@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Copy, Plus, Minus, Check, X, Search, Filter, Clock, ChevronUp, ChevronDown, Users, Settings } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import type { License } from '../types/License';
 import { LicenseAPI } from '../services/api';
 import { LicenseUpdateConfirmation } from './LicenseUpdateConfirmation';
+import { LicenseDeleteConfirmation } from './LicenseDeleteConfirmation';
 
 interface LicenseTableProps {
   licenses: License[];
@@ -26,6 +28,9 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onRefresh 
   const [bulkDays, setBulkDays] = useState<number>(1);
   const [showUpdateModal, setShowUpdateModal] = useState<boolean>(false);
   const [updateResult, setUpdateResult] = useState<any>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const [deleteResult, setDeleteResult] = useState<any>(null);
 
   // Filter licenses based on search and filter criteria
   const filteredLicenses = licenses.filter(license => {
@@ -184,6 +189,46 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onRefresh 
     onRefresh();
   };
 
+  const handleDeleteSelected = async () => {
+    if (selectedLicenses.length === 0) return;
+
+    setIsDeleting(true);
+    setDeleteResult(null);
+
+    try {
+      // Get the serials of selected licenses
+      const licensesToDelete = licenses.filter(license => selectedLicenses.includes(license.id));
+      const serials = licensesToDelete.map(license => license.serial);
+
+      console.log('Deleting licenses with serials:', serials);
+      const result = await LicenseAPI.deleteLicenses(serials);
+      
+      console.log('Delete result:', result);
+      setDeleteResult(result);
+      
+      if (result.success) {
+        setSelectedLicenses([]);
+      }
+    } catch (error) {
+      console.error('Error deleting licenses:', error);
+      setDeleteResult({
+        success: false,
+        message: 'Error al eliminar licencias'
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+    setDeleteResult(null);
+    // Refresh data after closing modal if delete was successful
+    if (deleteResult?.success) {
+      onRefresh();
+    }
+  };
+
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
   };
@@ -298,6 +343,14 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onRefresh 
               </div>
               
               <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setShowDeleteModal(true)}
+                  disabled={selectedLicenses.length === 0}
+                  className="flex items-center gap-2 px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors disabled:opacity-50"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Eliminar ({selectedLicenses.length})
+                </button>
                 <button
                   onClick={() => handleBulkUpdateDates('subtract')}
                   disabled={isUpdating || selectedLicenses.length === 0}
@@ -534,6 +587,16 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onRefresh 
         isOpen={showUpdateModal}
         onClose={handleCloseUpdateModal}
         result={updateResult}
+      />
+      
+      {/* Delete Confirmation Modal */}
+      <LicenseDeleteConfirmation
+        isOpen={showDeleteModal}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleDeleteSelected}
+        selectedLicenses={licenses.filter(license => selectedLicenses.includes(license.id))}
+        isDeleting={isDeleting}
+        deleteResult={deleteResult}
       />
     </div>
   );

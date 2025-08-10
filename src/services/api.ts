@@ -193,4 +193,48 @@ export class LicenseAPI {
       };
     }
   }
+
+  static async deleteLicenses(serials: string[]): Promise<APIResponse> {
+    try {
+      console.log('Deleting licenses:', serials);
+      const response = await fetch(`${API_BASE_URL}/delete_rows.php`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          serials: serials
+        }),
+      });
+
+      console.log('Delete response status:', response.status);
+      const responseText = await response.text();
+      console.log('Delete response text:', responseText);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      let data;
+      try {
+        data = JSON.parse(responseText);
+        console.log('Parsed delete response:', data);
+      } catch (parseError) {
+        console.error('JSON parse error:', parseError);
+        throw new Error(`Invalid JSON response: ${responseText.substring(0, 100)}...`);
+      }
+      
+      return {
+        success: true,
+        message: data.message || 'Licenses deleted successfully',
+        data
+      };
+    } catch (error) {
+      console.error('Error deleting licenses:', error);
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : 'Unknown error occurred'
+      };
+    }
+  }
 }
